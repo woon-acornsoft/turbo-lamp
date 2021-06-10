@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/go-pg/pg/v10"
+	"github.com/woon-acornsoft/turbo-lamp/model"
 )
 
 type User struct {
@@ -16,6 +17,16 @@ func (u User) String() string {
 	return fmt.Sprintf("User<%s %s>", u.Id, u.Name)
 }
 
+var db *pg.DB
+
+func Connect() {
+	db = pg.Connect(&pg.Options{
+		Addr:     ":5432",
+		User:     "auth",
+		Password: "pass",
+		Database: "auth",
+	})
+}
 func ExampleDB_Model() {
 	db := pg.Connect(&pg.Options{
 		Addr:     ":5432",
@@ -29,14 +40,14 @@ func ExampleDB_Model() {
 	// if err != nil {
 	// 	panic(err)
 	// }
-
+	var userList []model.User
 	// Select all users.
-	var users []User
-	err := db.Model(&users).Select()
+	// var users []User
+	err := db.Model(&userList).Select()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(users)
+	fmt.Println(userList)
 
 	user1 := &User{
 		Id:   "new",
